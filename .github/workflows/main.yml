@@ -38,6 +38,7 @@ jobs:  # Telling what jobs we need to happen
       run: flutter build appbundle
   deploy:
     name: Deploy
+    runs-on: ubuntu-latest
     steps:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
