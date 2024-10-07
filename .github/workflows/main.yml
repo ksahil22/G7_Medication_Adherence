@@ -12,6 +12,7 @@ jobs:  # Telling what jobs we need to happen
   build:      # Specify the building name and machine
     name: Build  # you can name the build whatever you want
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -31,12 +32,6 @@ jobs:  # Telling what jobs we need to happen
       run: flutter build apk --release
     - name: Build appBundle
       run: flutter build appbundle
-  release:
-    name: Upload Artifacts
-    needs: build
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
