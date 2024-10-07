@@ -31,8 +31,9 @@ jobs:  # Telling what jobs we need to happen
       run: flutter build apk --release
     - name: Build appBundle
       run: flutter build appbundle
-  Release:
+  release:
     name: Upload Artifacts
+    needs: build
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
