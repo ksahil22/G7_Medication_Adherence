@@ -32,7 +32,7 @@ jobs:  # Telling what jobs we need to happen
     - name: Build appBundle
       run: flutter build appbundle
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Releases
         path: |
