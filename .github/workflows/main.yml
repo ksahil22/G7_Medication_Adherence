@@ -58,9 +58,8 @@ jobs:  # Telling what jobs we need to happen
       run: |
         new_version="${{ env.VERSION }}-build-${{ github.run_number }}"
         echo "VERSION=$new_version" >> $GITHUB_ENV
-    - name: Create Release
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: "build/app/outputs/flutter-apk/app-release.apk"
-        tag: v${{ env.VERSION }}
-        token: ${{ secrets.TOKEN }}
+    - name: Create a Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
