@@ -56,8 +56,8 @@ jobs:  # Telling what jobs we need to happen
       if: env.TAG_EXISTS == 'true'
       id: modify_tag
       run: |
-        new_version="${{ env.VERSION }}-build-${{ github.run_number }}"
-        echo "VERSION=$new_version" >> $GITHUB_ENV
+        tag_name="${{ env.VERSION }}-build-${{ github.run_number }}"
+        echo "VERSION=$tag_name" >> $GITHUB_ENV
     - name: Create a Release
       id: create_release
       uses: actions/create-release@v1
