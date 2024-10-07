@@ -31,6 +31,7 @@ jobs:  # Telling what jobs we need to happen
     permissions: write-all
     name: Build  # you can name the build whatever you want
     runs-on: ubuntu-latest
+    needs: setup
     steps:
     - name: Build APK
       run: flutter build apk --release
@@ -39,6 +40,7 @@ jobs:  # Telling what jobs we need to happen
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    needs: [setup, build]
     steps:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
