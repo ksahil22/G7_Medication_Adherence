@@ -10,6 +10,7 @@ on:
       - 'feature/*'
 jobs:  # Telling what jobs we need to happen
   build:      # Specify the building name and machine
+    permissions: write-all
     name: Build & Release  # you can name the build whatever you want
     runs-on: ubuntu-latest
     steps:
