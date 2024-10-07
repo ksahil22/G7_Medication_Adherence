@@ -9,9 +9,8 @@ on:
       - main
       - 'feature/*'
 jobs:  # Telling what jobs we need to happen
-  build:      # Specify the building name and machine
-    permissions: write-all
-    name: Build & Release  # you can name the build whatever you want
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
@@ -28,48 +27,20 @@ jobs:  # Telling what jobs we need to happen
         channel: 'stable'
     - name: Install Dependencies
       run: flutter pub get
+  build:      # Specify the building name and machine
+    permissions: write-all
+    name: Build  # you can name the build whatever you want
+    runs-on: ubuntu-latest
+    steps:
     - name: Build APK
       run: flutter build apk --release
     - name: Build appBundle
       run: flutter build appbundle
+  deploy:
+    name: Deploy
+    steps:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Releases
-        path: |
-          build/app/outputs/flutter-apk/app-release.apk
-          build/app/outputs/bundle/release/app-release.aab
-          build/ios_build.tar.gz
-    - name: Extract version from pubspec.yaml
-      id: extract_version
-      run: |
-        version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
-        echo "VERSION=$version" >> $GITHUB_ENV
-    - name: Check if Tag Exists
-      id: check_tag
-      run: |
-        if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
-          echo "TAG_EXISTS=true" >> $GITHUB_ENV
-        else
-          echo "TAG_EXISTS=false" >> $GITHUB_ENV
-        fi
-    - name: Modify Tag
-      if: env.TAG_EXISTS == 'true'
-      id: modify_tag
-      run: |
-        new_version="${{ env.VERSION }}-build-${{ github.run_number }}"
-        echo "VERSION=$new_version" >> $GITHUB_ENV
-    - name: Create a Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-          tag_name: 1.0.0
-          release_name: Release 1.0.0
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
+        path: build/app/outputs/flutter-apk/app-release.apk
