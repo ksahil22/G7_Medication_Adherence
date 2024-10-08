@@ -28,6 +28,8 @@ jobs:  # Telling what jobs we need to happen
         channel: 'stable'
     - name: Install Dependencies
       run: flutter pub get
+    - name: Unit-tests
+      run: flutter test test/widget_test.dart
     - name: Build APK
       run: flutter build apk --release
     - name: Build appBundle
