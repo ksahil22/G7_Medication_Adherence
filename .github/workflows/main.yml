@@ -12,7 +12,6 @@ jobs:  # Telling what jobs we need to happen
   build:      # Specify the building name and machine
     name: Build  # you can name the build whatever you want
     runs-on: ubuntu-latest
-    permissions: write-all
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -28,8 +27,21 @@ jobs:  # Telling what jobs we need to happen
         channel: 'stable'
     - name: Install Dependencies
       run: flutter pub get
+  unit_tests:      # Specify the building name and machine
+    name: Unit-Tests  # you can name the build whatever you want
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
     - name: Unit-tests
       run: flutter test test/widget_test.dart
+  deploy_artifacts:
+    name: Deploy  # you can name the build whatever you want
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
     - name: Build APK
       run: flutter build apk --release
     - name: Build appBundle
