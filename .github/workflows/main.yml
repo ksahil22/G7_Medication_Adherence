@@ -42,7 +42,7 @@ jobs:  # Telling what jobs we need to happen
     - name: Install Dependencies
       run: flutter pub get
     - name: Unit-tests
-      run: flutter test test/widget_test.dart
+      run: flutter test
   deploy_artifacts:
     name: Deploy  # you can name the build whatever you want
     runs-on: ubuntu-latest
