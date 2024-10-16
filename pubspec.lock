@@ -151,7 +151,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_lints:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_lints
       sha256: "3f41d009ba7172d5ff9be5f6e6e6abb4300e263aab8866d2a0842ed2a70f8f0c"
@@ -159,7 +159,7 @@ packages:
     source: hosted
     version: "4.0.0"
   flutter_svg:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_svg
       sha256: "7b4ca6cf3304575fe9c8ec64813c8d02ee41d2afe60bcfe0678bcb5375d596a2"
@@ -167,7 +167,7 @@ packages:
     source: hosted
     version: "2.0.10+1"
   flutter_test:
-    dependency: "direct dev"
+    dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
