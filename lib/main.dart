@@ -8,6 +8,7 @@ import 'package:medication_adherence_app/screens/login_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    name: 'Reminder App',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MyApp());
