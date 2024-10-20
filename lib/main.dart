@@ -31,4 +31,5 @@ class MyApp extends StatelessWidget {
       home: _auth.currentUser != null ? HomeScreen() : LoginScreen(),
     );
   }
+  //
 }
