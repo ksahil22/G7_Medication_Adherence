@@ -1,30 +1,52 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:medication_adherence_app/main.dart';
+import 'package:medication_adherence_app/screens/home_screen.dart';
+import 'package:medication_adherence_app/components/reminder_card.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  testWidgets('HomeScreen displays welcome message and reminders',
+      (WidgetTester tester) async {
+    // Build the HomeScreen widget.
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: HomeScreen(),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the AppBar displays the correct title.
+    expect(find.text('MediAlert'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that the welcome message is displayed.
+    expect(find.text('Welcome Gracy!'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the "Current Reminders" label is displayed.
+    expect(find.text('Current Reminders'), findsOneWidget);
+
+    // Verify that the reminder cards are displayed with the correct details.
+    expect(find.byType(ReminderCard), findsNWidgets(2));
+    expect(find.text('Aspirin'), findsOneWidget);
+    expect(find.text('9:00 AM'), findsOneWidget);
+    expect(find.text('Paracetamol'), findsOneWidget);
+    expect(find.text('2:00 PM'), findsOneWidget);
+
+    // Verify that the BottomNavigationBar is present with correct items.
+    expect(find.byType(BottomNavigationBar), findsOneWidget);
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Reminder'), findsOneWidget);
+    expect(find.text('Chat AI'), findsOneWidget);
+
+    // Simulate tapping on the "Reminder" tab in the BottomNavigationBar.
+    await tester.tap(find.text('Reminder'));
+    await tester.pumpAndSettle();
+
+    // Verify that the ReminderView is displayed.
+    expect(find.text('Reminder Screen'), findsOneWidget);
+
+    // Simulate tapping on the "Chat AI" tab in the BottomNavigationBar.
+    await tester.tap(find.text('Chat AI'));
+    await tester.pumpAndSettle();
+
+    // Verify that the ChatAIView is displayed.
+    expect(find.text('Chat AI Screen'), findsOneWidget);
   });
 }

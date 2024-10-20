@@ -22,7 +22,11 @@ class ReminderCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            SvgPicture.asset('images/Vector.svg'),
+            // SvgPicture.asset('images/Vector.svg'),
+            Icon(
+              Icons.medication_rounded,
+              color: Colors.white,
+            ),
             const SizedBox(width: 20),
             Expanded(
               child: Column(

@@ -22,7 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: Colors.white70,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.black,  
         foregroundColor: Colors.white,
         title: Text("Create Account"),
       ),

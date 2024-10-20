@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medication_adherence_app/components/reminder_card.dart';
+import 'package:medication_adherence_app/screens/chat_screen.dart';
+import 'package:medication_adherence_app/screens/reminder_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -117,12 +119,7 @@ class ReminderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Reminder Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
+    return ReminderScreen();
   }
 }
 
@@ -132,11 +129,6 @@ class ChatAIView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Chat AI Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
+    return ChatScreen();
   }
 }
