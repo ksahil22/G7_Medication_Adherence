@@ -1,0 +1,74 @@
+name: "Build, Test & Deploy"
+on:
+  pull_request:
+    branches:
+      - main
+      - 'feature/*'
+  push:
+    branches:
+      - main
+      - 'feature/*'
+jobs:  # Telling what jobs we need to happen
+  build:      # Specify the building name and machine
+    name: Build  # you can name the build whatever you want
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - name: Set Up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'graalvm'
+        java-version: '21'
+    - name: Set Up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.3'
+        channel: 'stable'
+    - name: Install Dependencies
+      run: flutter pub get
+  unit_tests:      # Specify the building name and machine
+    name: Unit-Tests  # you can name the build whatever you want
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - name: Set Up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.3'
+        channel: 'stable'
+    - name: Install Dependencies
+      run: flutter pub get
+    - name: Unit-tests
+      run: flutter test
+  deploy_artifacts:
+    name: Deploy  # you can name the build whatever you want
+    runs-on: ubuntu-latest
+    permissions: write-all
+    needs: [build, unit_tests]
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - name: Set Up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'graalvm'
+        java-version: '21'
+    - name: Set Up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.3'
+        channel: 'stable'
+    - name: Install Dependencies
+      run: flutter pub get
+    - name: Build APK
+      run: flutter build apk --release
+    - name: Build appBundle
+      run: flutter build appbundle
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Releases
+        path: build/app/outputs/flutter-apk/app-release.apk
