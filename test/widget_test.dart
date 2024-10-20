@@ -40,13 +40,13 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that the ReminderView is displayed.
-    expect(find.text('Reminder Screen'), findsOneWidget);
+    expect(find.text('Add'), findsOneWidget);
 
     // Simulate tapping on the "Chat AI" tab in the BottomNavigationBar.
     await tester.tap(find.text('Chat AI'));
     await tester.pumpAndSettle();
 
     // Verify that the ChatAIView is displayed.
-    expect(find.text('Chat AI Screen'), findsOneWidget);
+    expect(find.text('Type your message...'), findsOneWidget);
   });
 }
