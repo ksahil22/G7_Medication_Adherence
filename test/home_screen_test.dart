@@ -47,6 +47,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that the ChatAIView is displayed.
-    expect(find.text('Type your message...'), findsOneWidget);
+    expect(find.text('Type your message....'), findsOneWidget);
   });
 }
