@@ -43,6 +43,8 @@ dependencies:
   rxdart: ^0.28.0
   flutter_svg: ^2.0.10+1
   mockito: ^5.4.4
+  flutter_markdown: ^0.7.4+1
+  google_generative_ai: ^0.4.6
 
 dev_dependencies:
   flutter_test:
