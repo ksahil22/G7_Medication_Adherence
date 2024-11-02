@@ -70,7 +70,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   Widget build(BuildContext context) {
     const textFieldDecoration = InputDecoration(
       contentPadding: EdgeInsets.all(15),
-      hintText: 'Enter a prompt...',
+      hintText: 'Type your message...',
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(14),
