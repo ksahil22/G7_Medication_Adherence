@@ -207,7 +207,24 @@ class _ReminderScreenState extends State<ReminderScreen> {
       height: 50,
       child: ElevatedButton(
         onPressed: () {
-          // Handle the add button press
+          if (_selectedDate != null && _selectedTime != null) {
+            // Format the selected date and time as desired
+            final formattedDateTime =
+                '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year} ${_selectedTime!.format(context)}';
+
+            // Handle the add button press
+            print('Selected Date and Time: $formattedDateTime');
+
+            // You can now use the selected date and time, for example:
+            // save to database, send to another screen, etc.
+          } else {
+            // Show a message if no date or time has been selected
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Please select a date and time first.'),
+              ),
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.black,
