@@ -1,4 +1,11 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:medication_adherence_app/model/reminder_model.dart';
 
 class ReminderScreen extends StatefulWidget {
   const ReminderScreen({super.key});
@@ -16,6 +23,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
   String? _selectedPower = 'mg';
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+  User? user = FirebaseAuth.instance.currentUser;
 
   // Method to show date and time picker
   Future<void> _selectDateTime(BuildContext context) async {
@@ -39,6 +47,36 @@ class _ReminderScreenState extends State<ReminderScreen> {
         });
       }
     }
+  }
+
+  addReminder(
+    BuildContext context,
+  ) {
+    try {
+      ReminderModel reminderModel = ReminderModel();
+      reminderModel.medicineName = _medicationNameController.text;
+      reminderModel.medicineType = _medicationTypeController.text;
+      reminderModel.pillCount = _pillCount;
+      reminderModel.medicinePower = _selectedPower;
+      reminderModel.dateTime = DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
+      );
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .collection('reminder')
+          .doc()
+          .set(reminderModel.toMap());
+      Fluttertoast.showToast(msg: "Reminder Added");
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      log(e.toString());
+    }
+    log('Reminder Added');
   }
 
   @override
@@ -214,6 +252,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
 
             // Handle the add button press
             print('Selected Date and Time: $formattedDateTime');
+            addReminder(context);
 
             // You can now use the selected date and time, for example:
             // save to database, send to another screen, etc.
