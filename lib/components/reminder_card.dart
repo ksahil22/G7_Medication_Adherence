@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 
 class ReminderCard extends StatelessWidget {
   final String medicineName;
-  final int pillsCount;
+  final String medicineType;
+  final int pillCount;
+  final String medicinePower;
   final String time;
 
   const ReminderCard({
     super.key,
     required this.medicineName,
-    required this.pillsCount,
+    required this.medicineType,
+    required this.pillCount,
+    required this.medicinePower,
     required this.time,
   });
 
@@ -40,7 +44,7 @@ class ReminderCard extends StatelessWidget {
                         color: Colors.white),
                   ),
                   Text(
-                    '$pillsCount pills',
+                    '$pillCount pills',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.grey,

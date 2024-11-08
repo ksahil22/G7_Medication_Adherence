@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medication_adherence_app/components/reminder_card.dart';
 import 'package:medication_adherence_app/screens/chat_screen.dart';
@@ -82,32 +84,47 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Welcome Gracy!',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Current Reminders',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-          // SizedBox(height: 8),
-          ReminderCard(
-            medicineName: 'Aspirin',
-            pillsCount: 2,
-            time: '9:00 AM',
-          ),
-          ReminderCard(
-            medicineName: 'Paracetamol',
-            pillsCount: 1,
-            time: '2:00 PM',
-          ),
-        ],
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('reminder')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text("No reminders added yet."));
+          }
+
+          final reminders = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: reminders.length,
+            itemBuilder: (context, index) {
+              var reminder = reminders[index].data() as Map<String, dynamic>;
+              String medicineName = reminder['medicineName'] ?? '';
+              String medicineType = reminder['medicineType'] ?? '';
+              String medicinePower = reminder['medicinePower'] ?? '';
+              int pillCount = reminder['pillCount'] ?? 0;
+              DateTime dateTime = reminder['dateTime'].toDate();
+
+              return ReminderCard(
+                medicineName: medicineName,
+                medicineType: medicineType,
+                pillCount: pillCount,
+                medicinePower: medicinePower,
+                time: dateTime.toString(),
+              );
+            },
+          );
+        },
       ),
     );
   }

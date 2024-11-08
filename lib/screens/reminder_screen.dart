@@ -67,7 +67,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
       );
       FirebaseFirestore.instance
           .collection('users')
-          .doc(user!.uid)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('reminder')
           .doc()
           .set(reminderModel.toMap());
