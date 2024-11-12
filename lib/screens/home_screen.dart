@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medication_adherence_app/components/reminder_card.dart';
 import 'package:medication_adherence_app/screens/chat_screen.dart';
 import 'package:medication_adherence_app/screens/reminder_screen.dart';
+import 'package:medication_adherence_app/services/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  User? user;
 
   final List<Widget> _screens = [
     const HomeView(),
@@ -76,6 +80,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser;
+  }
+
+  void onClickedNotifications(String? payload) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
+  }
 }
 
 // Home Screen with welcome message and reminders
@@ -114,6 +133,11 @@ class HomeView extends StatelessWidget {
               String medicinePower = reminder['medicinePower'] ?? '';
               int pillCount = reminder['pillCount'] ?? 0;
               DateTime dateTime = reminder['dateTime'].toDate();
+              String dateLog =
+                  "Date: ${dateTime.day} ${dateTime.month} ${dateTime.year} ${dateTime.hour} ${dateTime.minute} ${dateTime.second}";
+              log(dateLog);
+              NotificationService.scheduleNotification("Reminder Title",
+                  "Don\'t forget to take the medicine", dateTime);
 
               return ReminderCard(
                 medicineName: medicineName,

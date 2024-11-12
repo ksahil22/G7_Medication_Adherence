@@ -45,6 +45,8 @@ dependencies:
   mockito: ^5.4.4
   flutter_markdown: ^0.7.4+1
   google_generative_ai: ^0.4.6
+  flutter_local_notifications: ^18.0.0
+  timezone: ^0.9.4
 
 dev_dependencies:
   flutter_test:

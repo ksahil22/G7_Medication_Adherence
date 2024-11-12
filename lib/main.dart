@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:medication_adherence_app/firebase_options.dart';
 import 'package:medication_adherence_app/screens/home_screen.dart';
 import 'package:medication_adherence_app/screens/login_screen.dart';
+import 'package:medication_adherence_app/services/notification_service.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
+  tz.initializeTimeZones();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
