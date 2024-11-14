@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:medication_adherence_app/components/reminder_card.dart';
 import 'package:medication_adherence_app/screens/chat_screen.dart';
 import 'package:medication_adherence_app/screens/reminder_screen.dart';
@@ -104,51 +105,66 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection('reminder')
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasError ||
-              !snapshot.hasData ||
-              snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("No reminders added yet."));
-          }
-
-          final reminders = snapshot.data!.docs;
-
-          return ListView.builder(
-            itemCount: reminders.length,
-            itemBuilder: (context, index) {
-              var reminder = reminders[index].data() as Map<String, dynamic>;
-              String medicineName = reminder['medicineName'] ?? '';
-              String medicineType = reminder['medicineType'] ?? '';
-              String medicinePower = reminder['medicinePower'] ?? '';
-              int pillCount = reminder['pillCount'] ?? 0;
-              DateTime dateTime = reminder['dateTime'].toDate();
-              String dateLog =
-                  "Date: ${dateTime.day} ${dateTime.month} ${dateTime.year} ${dateTime.hour} ${dateTime.minute} ${dateTime.second}";
-              log(dateLog);
-              NotificationService.scheduleNotification("Reminder Title",
-                  "Don\'t forget to take the medicine", dateTime);
-
-              return ReminderCard(
-                medicineName: medicineName,
-                medicineType: medicineType,
-                pillCount: pillCount,
-                medicinePower: medicinePower,
-                time: dateTime.toString(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('reminder')
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
               );
-            },
-          );
-        },
+            }
+            if (snapshot.hasError ||
+                !snapshot.hasData ||
+                snapshot.data!.docs.isEmpty) {
+              return const Center(child: Text("No reminders added yet."));
+            }
+
+            final reminders = snapshot.data!.docs;
+
+            return ListView.builder(
+              itemCount: reminders.length,
+              itemBuilder: (context, index) {
+                var reminder = reminders[index].data() as Map<String, dynamic>;
+                String medicineName = reminder['medicineName'] ?? '';
+                String medicineType = reminder['medicineType'] ?? '';
+                String medicinePower = reminder['medicinePower'] ?? '';
+                int pillCount = reminder['pillCount'] ?? 0;
+                DateTime dateTime = reminder['dateTime'].toDate();
+
+                // Format the time as "hour : minutes am/pm"
+                String formattedTime = DateFormat('hh:mm a').format(dateTime);
+
+                log("Date: ${dateTime.day} ${dateTime.month} ${dateTime.year} $formattedTime");
+                NotificationService.scheduleNotification(
+                  "Reminder Title",
+                  "Don't forget to take the medicine",
+                  dateTime,
+                );
+
+                return ReminderCard(
+                  medicineName: medicineName,
+                  medicineType: medicineType,
+                  pillCount: pillCount,
+                  medicinePower: medicinePower,
+                  time: formattedTime,
+                  onDelete: () {
+                    // Delete the reminder from the list and database
+                    reminders.removeAt(index);
+                    // Optional: delete from Firebase or other database
+                    // await reminders[index].reference.delete();
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
