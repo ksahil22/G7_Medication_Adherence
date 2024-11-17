@@ -9,9 +9,6 @@ import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:mockito/mockito.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-class MockFlutterLocalNotificationsPlugin extends Mock
-    implements FlutterLocalNotificationsPlugin {}
-
 void main() {
   group('MyWidget Test', () {
     late MockFirebaseAuth mockAuth;
@@ -70,18 +67,9 @@ void main() {
           ),
         ),
       );
-      // Allow time for async operations to complete
-      // await tester.pumpAndSettle();
 
       // Verify that the AppBar displays the correct title.
       expect(find.text('MediAlert'), findsOneWidget);
-
-      // Verify that the reminder cards are displayed with the correct details.
-      // expect(find.byType(ReminderCard), findsNWidgets(2));
-      // expect(find.text('Aspirin'), findsOneWidget);
-      // expect(find.text('09:00 AM'), findsOneWidget);
-      // expect(find.text('Paracetamol'), findsOneWidget);
-      // expect(find.text('02:00 PM'), findsOneWidget);
 
       // Verify that the BottomNavigationBar is present with correct items.
       expect(find.byType(BottomNavigationBar), findsOneWidget);
