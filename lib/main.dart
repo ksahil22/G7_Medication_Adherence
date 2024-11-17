@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
           ? HomeScreen(
               auth: _auth,
               firestore: _firestore,
+              enableNotifications: true,
             )
           : LoginScreen(
               firestore: _firestore,

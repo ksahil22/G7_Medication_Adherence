@@ -121,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               builder: (context) => HomeScreen(
                                     auth: _auth.auth,
                                     firestore: firebaseFirestore,
+                                    enableNotifications: true,
                                   )));
                     }
                   },

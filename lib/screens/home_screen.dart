@@ -12,31 +12,36 @@ import 'package:medication_adherence_app/services/notification_service.dart';
 class HomeScreen extends StatefulWidget {
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
+  final bool enableNotifications;
 
   const HomeScreen({
     required this.auth,
     required this.firestore,
+    required this.enableNotifications,
   });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState(
-        auth: auth,
-        firestore: firestore,
-      );
+      auth: auth,
+      firestore: firestore,
+      enableNotifications: enableNotifications);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
+  final bool enableNotifications;
 
   _HomeScreenState({
     required this.auth,
     required this.firestore,
+    required this.enableNotifications,
   }) : this.screens = [
           HomeView(
             firestore: firestore,
             firebaseAuth: auth,
+            enableNotifications: enableNotifications,
           ),
           ReminderView(
             firebaseAuth: auth,
@@ -115,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) => HomeScreen(
           auth: auth,
           firestore: firestore,
+          enableNotifications: enableNotifications,
         ),
       ),
     );
@@ -125,10 +131,12 @@ class _HomeScreenState extends State<HomeScreen> {
 class HomeView extends StatelessWidget {
   final FirebaseFirestore firestore;
   final FirebaseAuth firebaseAuth;
+  final bool enableNotifications;
 
   const HomeView({
     required this.firestore,
     required this.firebaseAuth,
+    required this.enableNotifications,
   });
 
   @override
@@ -171,11 +179,13 @@ class HomeView extends StatelessWidget {
                 String formattedTime = DateFormat('hh:mm a').format(dateTime);
 
                 log("Date: ${dateTime.day} ${dateTime.month} ${dateTime.year} $formattedTime");
-                NotificationService.scheduleNotification(
-                  "Reminder Title",
-                  "Don't forget to take the medicine",
-                  dateTime,
-                );
+                if (enableNotifications) {
+                  NotificationService.scheduleNotification(
+                    "Reminder Title",
+                    "Don't forget to take the medicine",
+                    dateTime,
+                  );
+                }
 
                 return ReminderCard(
                   medicineName: medicineName,
