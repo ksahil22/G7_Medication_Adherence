@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   MyApp({super.key});
 
@@ -32,7 +34,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
       ),
-      home: _auth.currentUser != null ? HomeScreen() : LoginScreen(),
+      home: _auth.currentUser != null
+          ? HomeScreen(
+              auth: _auth,
+              firestore: _firestore,
+            )
+          : LoginScreen(
+              firestore: _firestore,
+            ),
     );
   }
   //

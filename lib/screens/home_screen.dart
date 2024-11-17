@@ -10,21 +10,42 @@ import 'package:medication_adherence_app/screens/reminder_screen.dart';
 import 'package:medication_adherence_app/services/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+
+  const HomeScreen({
+    required this.auth,
+    required this.firestore,
+  });
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState(
+        auth: auth,
+        firestore: firestore,
+      );
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  User? user;
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
 
-  final List<Widget> _screens = [
-    const HomeView(),
-    const ReminderView(),
-    const ChatAIView(),
-  ];
+  _HomeScreenState({
+    required this.auth,
+    required this.firestore,
+  }) : this.screens = [
+          HomeView(
+            firestore: firestore,
+            firebaseAuth: auth,
+          ),
+          ReminderView(
+            firebaseAuth: auth,
+            firestore: firestore,
+          ),
+          const ChatAIView(),
+        ];
+
+  List<Widget> screens;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _screens[_currentIndex],
+      body: screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         currentIndex: _currentIndex,
@@ -85,14 +106,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    user = FirebaseAuth.instance.currentUser;
   }
 
   void onClickedNotifications(String? payload) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomeScreen(),
+        builder: (context) => HomeScreen(
+          auth: auth,
+          firestore: firestore,
+        ),
       ),
     );
   }
@@ -100,7 +123,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Home Screen with welcome message and reminders
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  final FirebaseFirestore firestore;
+  final FirebaseAuth firebaseAuth;
+
+  const HomeView({
+    required this.firestore,
+    required this.firebaseAuth,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +137,9 @@ class HomeView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
+          stream: firestore
               .collection('users')
-              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .doc(firebaseAuth.currentUser!.uid)
               .collection('reminder')
               .snapshots(),
           builder:
@@ -172,11 +201,16 @@ class HomeView extends StatelessWidget {
 
 // Placeholder for Reminder View
 class ReminderView extends StatelessWidget {
-  const ReminderView({super.key});
+  final FirebaseFirestore firestore;
+  final FirebaseAuth firebaseAuth;
+  const ReminderView({required this.firebaseAuth, required this.firestore});
 
   @override
   Widget build(BuildContext context) {
-    return ReminderScreen();
+    return ReminderScreen(
+      firebaseAuth: firebaseAuth,
+      firestore: firestore,
+    );
   }
 }
 

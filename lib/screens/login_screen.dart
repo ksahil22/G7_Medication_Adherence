@@ -1,18 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medication_adherence_app/screens/home_screen.dart';
 import 'package:medication_adherence_app/screens/signup_screen.dart';
 import 'package:medication_adherence_app/services/auth_service.dart';
+import 'package:medication_adherence_app/services/notification_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  final FirebaseFirestore firestore;
+
+  LoginScreen({required this.firestore});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState(
+        firebaseFirestore: firestore,
+      );
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final AuthService _auth = AuthService();
+  late final FirebaseFirestore firebaseFirestore;
+
+  _LoginScreenState({
+    required this.firebaseFirestore,
+  });
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   bool _isPasswordVisible = false; // Manage the visibility of the password
@@ -106,7 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) => HomeScreen(
+                                    auth: _auth.auth,
+                                    firestore: firebaseFirestore,
+                                  )));
                     }
                   },
                   child: Text(

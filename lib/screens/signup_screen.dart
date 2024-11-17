@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medication_adherence_app/screens/home_screen.dart';
@@ -13,6 +14,8 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final AuthService _auth = AuthService();
+  late final FirebaseFirestore _firebaseFirestore;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   bool _isPasswordVisible = false; // Manage the visibility of password
@@ -22,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: Colors.white70,
       appBar: AppBar(
-        backgroundColor: Colors.black,  
+        backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         title: Text("Create Account"),
       ),
@@ -106,7 +109,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) => HomeScreen(
+                                    auth: _auth.auth,
+                                    firestore: _firebaseFirestore,
+                                  )));
                     }
                   },
                   child: Text(
@@ -129,8 +135,12 @@ class _SignupScreenState extends State<SignupScreen> {
                     backgroundColor: Colors.black, // text color
                   ),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginScreen(
+                                  firestore: _firebaseFirestore,
+                                )));
                   },
                   child: Text(
                     "Login",

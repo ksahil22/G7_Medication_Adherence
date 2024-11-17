@@ -8,13 +8,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:medication_adherence_app/model/reminder_model.dart';
 
 class ReminderScreen extends StatefulWidget {
-  const ReminderScreen({super.key});
+  final FirebaseFirestore firestore;
+  final FirebaseAuth firebaseAuth;
+  const ReminderScreen({required this.firebaseAuth, required this.firestore});
 
   @override
-  State<ReminderScreen> createState() => _ReminderScreenState();
+  State<ReminderScreen> createState() => _ReminderScreenState(
+        firebaseAuth: firebaseAuth,
+        firestore: firestore,
+      );
 }
 
 class _ReminderScreenState extends State<ReminderScreen> {
+  final FirebaseFirestore firestore;
+  final FirebaseAuth firebaseAuth;
+  _ReminderScreenState({required this.firebaseAuth, required this.firestore});
   final TextEditingController _medicationNameController =
       TextEditingController();
   final TextEditingController _medicationTypeController =
@@ -23,7 +31,6 @@ class _ReminderScreenState extends State<ReminderScreen> {
   String? _selectedPower = 'mg';
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  User? user = FirebaseAuth.instance.currentUser;
 
   // Method to show date and time picker
   Future<void> _selectDateTime(BuildContext context) async {
@@ -65,9 +72,9 @@ class _ReminderScreenState extends State<ReminderScreen> {
         _selectedTime!.hour,
         _selectedTime!.minute,
       );
-      FirebaseFirestore.instance
+      firestore
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(firebaseAuth.currentUser!.uid)
           .collection('reminder')
           .doc()
           .set(reminderModel.toMap());
