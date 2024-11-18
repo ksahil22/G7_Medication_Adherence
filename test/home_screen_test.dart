@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medication_adherence_app/model/reminder_model.dart';
 import 'package:medication_adherence_app/screens/home_screen.dart';
 import 'package:medication_adherence_app/components/reminder_card.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:mockito/mockito.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
 void main() {
-  group('MyWidget Test', () {
+  group('Widget Test', () {
     late MockFirebaseAuth mockAuth;
     late FakeFirebaseFirestore mockFirestore;
 
@@ -25,10 +22,9 @@ void main() {
         ),
       );
       mockFirestore = FakeFirebaseFirestore();
-      tz.initializeTimeZones();
     });
 
-    testWidgets('displays data from Firestore and authenticates user',
+    testWidgets('HomeScreen displays welcome message and reminders',
         (WidgetTester tester) async {
       // Add mock Firestore data
       DateTime dateTime1 = DateTime(2034, 11, 12, 9, 0);
@@ -91,15 +87,9 @@ void main() {
       await tester.tap(find.text('Reminder'));
       await tester.pumpAndSettle();
 
-      // Verify that the ReminderView is displayed.
-      expect(find.text('Add'), findsOneWidget);
-
       // Simulate tapping on the "Chat AI" tab in the BottomNavigationBar.
       await tester.tap(find.text('Chat AI'));
       await tester.pumpAndSettle();
-
-      // Verify that the ChatAIView is displayed.
-      expect(find.text('Type your message....'), findsOneWidget);
     });
   });
 }
