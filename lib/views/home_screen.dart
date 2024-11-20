@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medication_adherence_app/components/reminder_card.dart';
-import 'package:medication_adherence_app/screens/chat_screen.dart';
-import 'package:medication_adherence_app/screens/reminder_screen.dart';
-import 'package:medication_adherence_app/services/notification_service.dart';
+import 'package:medication_adherence_app/views/chat_screen.dart';
+import 'package:medication_adherence_app/views/reminder_screen.dart';
+import 'package:medication_adherence_app/viewmodel/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   final FirebaseAuth auth;

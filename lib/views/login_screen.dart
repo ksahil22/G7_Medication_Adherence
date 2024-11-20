@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:medication_adherence_app/screens/home_screen.dart';
-import 'package:medication_adherence_app/screens/signup_screen.dart';
-import 'package:medication_adherence_app/services/auth_service.dart';
-import 'package:medication_adherence_app/services/notification_service.dart';
+import 'package:medication_adherence_app/views/home_screen.dart';
+import 'package:medication_adherence_app/views/signup_screen.dart';
+import 'package:medication_adherence_app/viewmodel/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final FirebaseFirestore firestore;

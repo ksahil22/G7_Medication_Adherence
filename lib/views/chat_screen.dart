@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-const String _apiKey = "AIzaSyCxMC_7G8xWNZR36QozkHjUcKUVmbbxDUY";
+const String _apiKey = "AIzaSyCS1wBHDUwscm4CPXC63x6tTyP-35T5608";
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({

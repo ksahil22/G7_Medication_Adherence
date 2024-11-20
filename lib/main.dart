@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:medication_adherence_app/firebase_options.dart';
-import 'package:medication_adherence_app/screens/home_screen.dart';
-import 'package:medication_adherence_app/screens/login_screen.dart';
-import 'package:medication_adherence_app/services/notification_service.dart';
+import 'package:medication_adherence_app/views/home_screen.dart';
+import 'package:medication_adherence_app/views/login_screen.dart';
+import 'package:medication_adherence_app/viewmodel/notification_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
