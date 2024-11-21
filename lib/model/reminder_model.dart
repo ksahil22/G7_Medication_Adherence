@@ -1,16 +1,18 @@
-class ReminderModel {
+class ReminderModel implements Comparable<ReminderModel> {
   String? medicineName;
   String? medicineType;
   int? pillCount;
   String? medicinePower;
-  DateTime? dateTime;
+  DateTime dateTime;
+  String? refID;
 
   ReminderModel(
       {this.medicineName,
       this.medicineType,
       this.pillCount,
       this.medicinePower,
-      this.dateTime});
+      required this.dateTime,
+      this.refID});
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,5 +32,15 @@ class ReminderModel {
       medicinePower: map['medicinePower'],
       dateTime: map['dateTime'],
     );
+  }
+
+  @override
+  int compareTo(ReminderModel dateTime) {
+    if (this.dateTime.isBefore(dateTime.dateTime)) {
+      return -1;
+    } else if (this.dateTime.isAfter(dateTime.dateTime)) {
+      return 1;
+    }
+    return 0;
   }
 }

@@ -60,18 +60,18 @@ class _ReminderScreenState extends State<ReminderScreen> {
     BuildContext context,
   ) {
     try {
-      ReminderModel reminderModel = ReminderModel();
-      reminderModel.medicineName = _medicationNameController.text;
-      reminderModel.medicineType = _medicationTypeController.text;
-      reminderModel.pillCount = _pillCount;
-      reminderModel.medicinePower = _selectedPower;
-      reminderModel.dateTime = DateTime(
+      DateTime dateTime = DateTime(
         _selectedDate!.year,
         _selectedDate!.month,
         _selectedDate!.day,
         _selectedTime!.hour,
         _selectedTime!.minute,
       );
+      ReminderModel reminderModel = ReminderModel(dateTime: dateTime);
+      reminderModel.medicineName = _medicationNameController.text;
+      reminderModel.medicineType = _medicationTypeController.text;
+      reminderModel.pillCount = _pillCount;
+      reminderModel.medicinePower = _selectedPower;
       firestore
           .collection('users')
           .doc(firebaseAuth.currentUser!.uid)

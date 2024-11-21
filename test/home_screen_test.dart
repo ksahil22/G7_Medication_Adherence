@@ -73,9 +73,9 @@ void main() {
       // Verify that the reminder cards are displayed with the correct details.
       expect(find.byType(ReminderCard), findsNWidgets(2));
       expect(find.text('Aspirin'), findsOneWidget);
-      expect(find.text('09:00 AM'), findsOneWidget);
+      expect(find.text('Nov 12, 09:00 AM'), findsOneWidget);
       expect(find.text('Paracetamol'), findsOneWidget);
-      expect(find.text('02:00 PM'), findsOneWidget);
+      expect(find.text('Nov 12, 02:00 PM'), findsOneWidget);
 
       // Verify that the BottomNavigationBar is present with correct items.
       expect(find.byType(BottomNavigationBar), findsOneWidget);

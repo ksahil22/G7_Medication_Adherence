@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medication_adherence_app/components/reminder_card.dart';
+import 'package:medication_adherence_app/model/reminder_model.dart';
 import 'package:medication_adherence_app/views/chat_screen.dart';
 import 'package:medication_adherence_app/views/reminder_screen.dart';
 import 'package:medication_adherence_app/viewmodel/notification_service.dart';
@@ -164,28 +165,79 @@ class HomeView extends StatelessWidget {
             }
 
             final reminders = snapshot.data!.docs;
-
+            List<ReminderModel> reminderList = List.filled(
+                0, ReminderModel(dateTime: DateTime(2050)),
+                growable: true);
+            ReminderModel dateTimeRecentModel = ReminderModel(
+                medicineName: 'medicineName',
+                medicineType: 'medicineType',
+                medicinePower: 'medicinePower',
+                pillCount: 1,
+                dateTime: DateTime(2050),
+                refID: 'refID');
+            for (int i = 0; i < reminders.length; i++) {
+              var reminder = reminders[i].data() as Map<String, dynamic>;
+              String medicineName = reminder['medicineName'] ?? '';
+              String medicineType = reminder['medicineType'] ?? '';
+              String medicinePower = reminder['medicinePower'] ?? '';
+              int pillCount = reminder['pillCount'] ?? 0;
+              DateTime dateTime = reminder['dateTime'].toDate();
+              String refID = reminders[i].reference.id;
+              ReminderModel reminderModel = ReminderModel(
+                medicineName: medicineName,
+                medicineType: medicineType,
+                medicinePower: medicinePower,
+                pillCount: pillCount,
+                dateTime: dateTime,
+                refID: refID,
+              );
+              if (dateTime
+                  .isBefore(DateTime.now().add(const Duration(minutes: -1)))) {
+                DateTime currentDateTime =
+                    DateTime.now().add(const Duration(days: 1));
+                dateTime = DateTime(currentDateTime.year, currentDateTime.month,
+                    currentDateTime.day, dateTime.hour, dateTime.minute, 0);
+                firestore
+                    .collection('users')
+                    .doc(firebaseAuth.currentUser!.uid)
+                    .collection('reminder')
+                    .doc(reminders[i].reference.id)
+                    .update({'dateTime': dateTime});
+                reminderModel.dateTime = dateTime;
+              }
+              reminderList.add(reminderModel);
+              log(DateFormat('hh:mm a').format(reminderModel.dateTime!));
+              if (dateTimeRecentModel.dateTime!.isAfter(dateTime)) {
+                dateTimeRecentModel = reminderModel;
+              }
+            }
+            DateTime notificationDateTime =
+                dateTimeRecentModel.dateTime ?? DateTime(2050);
+            if (enableNotifications) {
+              NotificationService.scheduleNotification(
+                "Medication Alert",
+                "Please Take ${dateTimeRecentModel.medicineName},${dateTimeRecentModel.pillCount} pill(s) in ${dateTimeRecentModel.medicinePower}",
+                notificationDateTime,
+              );
+              log("Notification set for: " +
+                  DateFormat('hh:mm a').format(notificationDateTime));
+            }
+            log("Before Sort Length: " + reminderList.length.toString());
+            reminderList.sort();
+            log("Length: " + reminderList.length.toString());
             return ListView.builder(
-              itemCount: reminders.length,
+              itemCount: reminderList.length,
               itemBuilder: (context, index) {
-                var reminder = reminders[index].data() as Map<String, dynamic>;
-                String medicineName = reminder['medicineName'] ?? '';
-                String medicineType = reminder['medicineType'] ?? '';
-                String medicinePower = reminder['medicinePower'] ?? '';
-                int pillCount = reminder['pillCount'] ?? 0;
-                DateTime dateTime = reminder['dateTime'].toDate();
+                ReminderModel reminderModel = reminderList[index];
+                String medicineName = reminderModel.medicineName ?? '';
+                String medicineType = reminderModel.medicineType ?? '';
+                String medicinePower = reminderModel.medicinePower ?? '';
+                int pillCount = reminderModel.pillCount ?? 0;
+                DateTime dateTime = reminderModel.dateTime!;
 
                 // Format the time as "hour : minutes am/pm"
-                String formattedTime = DateFormat('hh:mm a').format(dateTime);
-
-                log("Date: ${dateTime.day} ${dateTime.month} ${dateTime.year} $formattedTime");
-                if (enableNotifications) {
-                  NotificationService.scheduleNotification(
-                    "Reminder Title",
-                    "Don't forget to take the medicine",
-                    dateTime,
-                  );
-                }
+                String formattedTime =
+                    DateFormat('MMM d, hh:mm a').format(dateTime);
 
                 return ReminderCard(
                   medicineName: medicineName,
@@ -195,9 +247,16 @@ class HomeView extends StatelessWidget {
                   time: formattedTime,
                   onDelete: () {
                     // Delete the reminder from the list and database
-                    reminders.removeAt(index);
+
+                    // reminder.reference.documentID;
                     // Optional: delete from Firebase or other database
                     // await reminders[index].reference.delete();
+                    firestore
+                        .collection('users')
+                        .doc(firebaseAuth.currentUser!.uid)
+                        .collection('reminder')
+                        .doc(reminderModel.refID)
+                        .delete();
                   },
                 );
               },
