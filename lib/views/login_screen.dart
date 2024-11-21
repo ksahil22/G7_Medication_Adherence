@@ -1,28 +1,39 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:medication_adherence_app/screens/home_screen.dart';
-import 'package:medication_adherence_app/screens/login_screen.dart';
-import 'package:medication_adherence_app/services/auth_service.dart';
+import 'package:medication_adherence_app/views/home_screen.dart';
+import 'package:medication_adherence_app/views/signup_screen.dart';
+import 'package:medication_adherence_app/viewmodel/auth_service.dart';
 
-class SignupScreen extends StatefulWidget {
-  SignupScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  final FirebaseFirestore firestore;
+
+  LoginScreen({required this.firestore});
 
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  _LoginScreenState createState() => _LoginScreenState(
+        firebaseFirestore: firestore,
+      );
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final AuthService _auth = AuthService();
+  late final FirebaseFirestore firebaseFirestore;
+
+  _LoginScreenState({
+    required this.firebaseFirestore,
+  });
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
-  bool _isPasswordVisible = false; // Manage the visibility of password
+  bool _isPasswordVisible = false; // Manage the visibility of the password
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white70,
       appBar: AppBar(
-        backgroundColor: Colors.black,  
+        backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         title: Text("Create Account"),
       ),
@@ -35,7 +46,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 50,
               ),
               Text(
-                "Sign Up",
+                "Sign In",
                 style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -98,7 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     backgroundColor: Colors.black, // text color
                   ),
                   onPressed: () async {
-                    User? user = await _auth.registerWithEmailAndPassword(
+                    User? user = await _auth.signInWithEmailAndPassword(
                       _emailController.text,
                       _passController.text,
                     );
@@ -106,11 +117,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) => HomeScreen(
+                                    auth: _auth.auth,
+                                    firestore: firebaseFirestore,
+                                    enableNotifications: true,
+                                  )));
                     }
                   },
                   child: Text(
-                    "Register",
+                    "Login",
                     style: TextStyle(color: Colors.white),
                   )),
               SizedBox(
@@ -129,11 +144,13 @@ class _SignupScreenState extends State<SignupScreen> {
                     backgroundColor: Colors.black, // text color
                   ),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignupScreen()));
                   },
                   child: Text(
-                    "Login",
+                    "Create Account",
                     style: TextStyle(color: Colors.white),
                   )),
             ],

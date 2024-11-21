@@ -1,13 +1,28 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:medication_adherence_app/model/reminder_model.dart';
 
 class ReminderScreen extends StatefulWidget {
-  const ReminderScreen({super.key});
+  final FirebaseFirestore firestore;
+  final FirebaseAuth firebaseAuth;
+  const ReminderScreen({required this.firebaseAuth, required this.firestore});
 
   @override
-  State<ReminderScreen> createState() => _ReminderScreenState();
+  State<ReminderScreen> createState() => _ReminderScreenState(
+        firebaseAuth: firebaseAuth,
+        firestore: firestore,
+      );
 }
 
 class _ReminderScreenState extends State<ReminderScreen> {
+  final FirebaseFirestore firestore;
+  final FirebaseAuth firebaseAuth;
+  _ReminderScreenState({required this.firebaseAuth, required this.firestore});
   final TextEditingController _medicationNameController =
       TextEditingController();
   final TextEditingController _medicationTypeController =
@@ -39,6 +54,36 @@ class _ReminderScreenState extends State<ReminderScreen> {
         });
       }
     }
+  }
+
+  addReminder(
+    BuildContext context,
+  ) {
+    try {
+      DateTime dateTime = DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
+      );
+      ReminderModel reminderModel = ReminderModel(dateTime: dateTime);
+      reminderModel.medicineName = _medicationNameController.text;
+      reminderModel.medicineType = _medicationTypeController.text;
+      reminderModel.pillCount = _pillCount;
+      reminderModel.medicinePower = _selectedPower;
+      firestore
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('reminder')
+          .doc()
+          .set(reminderModel.toMap());
+      Fluttertoast.showToast(msg: "Reminder Added");
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      log(e.toString());
+    }
+    log('Reminder Added');
   }
 
   @override
@@ -214,6 +259,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
 
             // Handle the add button press
             print('Selected Date and Time: $formattedDateTime');
+            addReminder(context);
 
             // You can now use the selected date and time, for example:
             // save to database, send to another screen, etc.

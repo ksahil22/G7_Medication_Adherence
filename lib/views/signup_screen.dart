@@ -1,21 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:medication_adherence_app/screens/home_screen.dart';
-import 'package:medication_adherence_app/screens/signup_screen.dart';
-import 'package:medication_adherence_app/services/auth_service.dart';
+import 'package:medication_adherence_app/views/home_screen.dart';
+import 'package:medication_adherence_app/views/login_screen.dart';
+import 'package:medication_adherence_app/viewmodel/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  SignupScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final AuthService _auth = AuthService();
+  late final FirebaseFirestore _firebaseFirestore;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
-  bool _isPasswordVisible = false; // Manage the visibility of the password
+  bool _isPasswordVisible = false; // Manage the visibility of password
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 50,
               ),
               Text(
-                "Sign In",
+                "Sign Up",
                 style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -98,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: Colors.black, // text color
                   ),
                   onPressed: () async {
-                    User? user = await _auth.signInWithEmailAndPassword(
+                    User? user = await _auth.registerWithEmailAndPassword(
                       _emailController.text,
                       _passController.text,
                     );
@@ -106,11 +109,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) => HomeScreen(
+                                    auth: _auth.auth,
+                                    firestore: _firebaseFirestore,
+                                    enableNotifications: true,
+                                  )));
                     }
                   },
                   child: Text(
-                    "Login",
+                    "Register",
                     style: TextStyle(color: Colors.white),
                   )),
               SizedBox(
@@ -132,10 +139,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SignupScreen()));
+                            builder: (context) => LoginScreen(
+                                  firestore: _firebaseFirestore,
+                                )));
                   },
                   child: Text(
-                    "Create Account",
+                    "Login",
                     style: TextStyle(color: Colors.white),
                   )),
             ],
