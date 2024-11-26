@@ -1,4 +1,4 @@
-# medication_adherence_app
+# Medication Adherence app
 
 A new Flutter project.
 
